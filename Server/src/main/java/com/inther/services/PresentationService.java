@@ -2,6 +2,7 @@ package com.inther.services;
 
 import com.inther.beans.utilities.AuthorityUtilityBean;
 import com.inther.beans.ResponseBean;
+import com.inther.beans.utilities.EmailUtilityBean;
 import com.inther.beans.utilities.ServiceUtilityBean;
 import com.inther.entities.implementation.PresentationEntity;
 import com.inther.exceptions.AccessDeniedException;
@@ -21,6 +22,7 @@ import java.util.Optional;
 public class PresentationService
 {
     private final AuthorityUtilityBean authorityUtilityBean;
+    private final EmailUtilityBean emailUtilityBean;
     private final ServiceUtilityBean serviceUtilityBean;
     private final PresentationRepository presentationRepository;
     private final ResponseBean responseBean;
@@ -133,6 +135,7 @@ public class PresentationService
             if (authorityUtilityBean.getCurrentAuthenticationEmail().equals(optionalPresentationEntity.get().getEmail())
                     || authorityUtilityBean.validateAdminAuthority())
             {
+                emailUtilityBean.sendDeletePresentationNotificationEmails(optionalPresentationEntity.get());
                 presentationRepository.deletePresentationEntityById(id);
                 responseBean.setHeaders(httpHeaders);
                 responseBean.setStatus(HttpStatus.OK);
@@ -151,11 +154,12 @@ public class PresentationService
     }
 
     @Autowired
-    public PresentationService(AuthorityUtilityBean authorityUtilityBean, ServiceUtilityBean serviceUtilityBean,
+    public PresentationService(AuthorityUtilityBean authorityUtilityBean, EmailUtilityBean emailUtilityBean, ServiceUtilityBean serviceUtilityBean,
                                PresentationRepository presentationRepository,
                                ResponseBean responseBean, HttpHeaders httpHeaders)
     {
         this.authorityUtilityBean = authorityUtilityBean;
+        this.emailUtilityBean = emailUtilityBean;
         this.serviceUtilityBean = serviceUtilityBean;
         this.presentationRepository = presentationRepository;
         this.responseBean = responseBean;

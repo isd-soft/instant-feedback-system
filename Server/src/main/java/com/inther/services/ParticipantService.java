@@ -2,6 +2,7 @@ package com.inther.services;
 
 import com.inther.beans.utilities.AuthorityUtilityBean;
 import com.inther.beans.ResponseBean;
+import com.inther.beans.utilities.EmailUtilityBean;
 import com.inther.beans.utilities.ServiceUtilityBean;
 import com.inther.entities.implementation.ParticipantEntity;
 import com.inther.entities.implementation.PresentationEntity;
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class ParticipantService
 {
     private final AuthorityUtilityBean authorityUtilityBean;
+    private final EmailUtilityBean emailUtilityBean;
     private final ServiceUtilityBean serviceUtilityBean;
     private final PresentationRepository presentationRepository;
     private final ParticipantRepository participantRepository;
@@ -37,6 +39,7 @@ public class ParticipantService
                             authorityUtilityBean.getCurrentAuthenticationEmail());
             if (!optionalParticipantEntity.isPresent())
             {
+                emailUtilityBean.sendPutParticipantNotificationEmail(participantEntity);
                 participantRepository.save(serviceUtilityBean.setAuthenticatedEmailPropertyValue(participantEntity));
                 responseBean.setHeaders(httpHeaders);
                 responseBean.setStatus(HttpStatus.CREATED);
@@ -79,11 +82,12 @@ public class ParticipantService
     }
 
     @Autowired
-    public ParticipantService(AuthorityUtilityBean authorityUtilityBean, ServiceUtilityBean serviceUtilityBean,
+    public ParticipantService(AuthorityUtilityBean authorityUtilityBean, EmailUtilityBean emailUtilityBean, ServiceUtilityBean serviceUtilityBean,
                               PresentationRepository presentationRepository, ParticipantRepository participantRepository,
                               ResponseBean responseBean, HttpHeaders httpHeaders)
     {
         this.authorityUtilityBean = authorityUtilityBean;
+        this.emailUtilityBean = emailUtilityBean;
         this.serviceUtilityBean = serviceUtilityBean;
         this.presentationRepository = presentationRepository;
         this.participantRepository = participantRepository;

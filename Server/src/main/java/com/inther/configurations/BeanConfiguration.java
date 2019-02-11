@@ -1,4 +1,4 @@
-package com.inther.configurators;
+package com.inther.configurations;
 
 import com.inther.assets.filters.CorsFilter;
 import org.modelmapper.ModelMapper;
