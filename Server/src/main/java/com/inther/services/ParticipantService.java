@@ -39,7 +39,7 @@ public class ParticipantService
                             authorityUtilityBean.getCurrentAuthenticationEmail());
             if (!optionalParticipantEntity.isPresent())
             {
-                emailUtilityBean.sendPutParticipantNotificationEmail(participantEntity);
+                emailUtilityBean.sendPutParticipantNotificationEmail(serviceUtilityBean.setAuthenticatedEmailPropertyValue(participantEntity));
                 participantRepository.save(serviceUtilityBean.setAuthenticatedEmailPropertyValue(participantEntity));
                 responseBean.setHeaders(httpHeaders);
                 responseBean.setStatus(HttpStatus.CREATED);
